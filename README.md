@@ -1,3 +1,5 @@
+<img align="left" width="100" height="100" style="margin: 25px 25px 5px 5px" src="discipl.svg">
+
 # discipl-paper-wallet
 
 library for creating paper wallets consisting of a QR holding an attested claim as a verifiable credential
