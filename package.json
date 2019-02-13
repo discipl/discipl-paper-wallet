@@ -1,12 +1,21 @@
 {
-  "name": "discipl-paper-wallet",
+  "name": "@discipl/paper-wallet",
   "version": "0.0.1",
   "description": "library for creating paper wallets consisting of a QR holding an attested claim as a verifiable credential",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "directories": {
     "test": "test"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "/src",
+    "/dist"
+  ],
   "scripts": {
+    "build": "babel src/ --out-dir dist",
     "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --require @babel/register ./test/**/*.spec.js",
     "lint": "./node_modules/standard/bin/cmd.js --parser babel-eslint",
     "lint-fix": "./node_modules/standard/bin/cmd.js --parser babel-eslint --fix",
@@ -23,6 +32,7 @@
   },
   "homepage": "https://github.com/discipl/discipl-paper-wallet#readme",
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
