@@ -3,10 +3,8 @@
 
 import * as pw from '../src/index.js'
 import stringify from 'json-stable-stringify'
-// import { loadConnector } from '../node_modules/@discipl/core/src/connector-loader.js'
 
 import { expect } from 'chai'
-// import sinon from 'sinon'
 const { createCanvas, loadImage } = require('canvas')
 let discipl = pw.getCore()
 const fs = require('fs')
@@ -63,7 +61,6 @@ describe('descipl-paper-wallet', function () {
       let link = await discipl.attest(attestor, 'Bewijs inschrijving Haarlem', claimLink)
 
       let claimT = await discipl.exportLD(link)
-      console.log(JSON.stringify(claimT, null, 2))
 
       let vc = await pw.issue(link)
 
@@ -102,15 +99,7 @@ describe('descipl-paper-wallet', function () {
       let scan = await loadImage(vc.qr)
       ctx.drawImage(scan, 50, 50, 692, 692)
       let readData = await pw.fromCanvas(canvasReader)
-      // console.log(readData.data)
       expect(stringify(JSON.parse(readData.data))).to.deep.equal(stringify(claimT))
-      // console.log('attestordid='+attestor.did)
-      // let valid = await pw.validate(attestor.did, readData.data)
-      // expect(valid).to.equal(true)
-      // let invalid = await pw.validate(ssid.did, readData.data)
-      // expect(invalid).to.equal(false)
-      // let claim = await discipl.get(claimLink)
-      // expect(claim.data).to.deep.equal(data)
     })
   })
 })

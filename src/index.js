@@ -1,6 +1,5 @@
 
 import QRCode from 'qrcode'
-// import * as JSPDF from '../node_modules/jspdf/dist/jspdf.node.debug.js'
 import jsQR from 'jsqr'
 import * as core from '@discipl/core'
 import stringify from 'json-stable-stringify'
@@ -87,8 +86,6 @@ const toCanvas = async (vc, template, canvas) => {
 const fromCanvas = (canvas) => {
   var ctx = canvas.getContext('2d')
   var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-  console.log(imageData.width)
-  console.log(imageData.height)
   var decoded = jsQR(imageData.data, imageData.width, imageData.height)
   if (decoded) {
     return decoded
@@ -106,7 +103,6 @@ const validate = async (did, decodedQR) => {
     let claimData = JSON.parse(decodedQR)
     if (claimData[did]) {
       result = await core.importLD(claimData)
-      console.log('RES: ' + result)
     }
   } catch (err) {
     console.log(err)
