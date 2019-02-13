@@ -2,6 +2,8 @@
 
 # discipl-paper-wallet
 
+Note: documentation below is out of date:
+
 library for creating paper wallets consisting of a QR holding an attested claim as a verifiable credential
 
 issue(attestLink)
