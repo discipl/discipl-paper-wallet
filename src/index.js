@@ -3,7 +3,7 @@ import QRCode from 'qrcode'
 import jsQR from 'jsqr'
 import * as core from '@discipl/core'
 import stringify from 'json-stable-stringify'
-const { loadImage } = require('canvas')
+import { loadImage } from 'canvas'
 
 /**
  * a default template
