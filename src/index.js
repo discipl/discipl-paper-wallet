@@ -101,10 +101,10 @@ const toCanvas = async (vc, template, canvas) => {
 
   let ctx = canvas.getContext('2d')
   ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
-  ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
+  //ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
 
   ctx.font = template.productHeaderFont
-  ctx.fillText(attestPredicate + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
+  //ctx.fillText(attestPredicate + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
 
   ctx.font = template.claimDataFont
   let line = 0
