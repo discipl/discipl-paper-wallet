@@ -48,6 +48,47 @@ const issue = async (attestLink) => {
 }
 
 /**
+ * draws claimData on a canvas
+ */
+const claimDataToCanvas = async (vc, template, canvas) => {
+  let attestordid = Object.keys(vc.claimData)[0]
+  let attestlink = Object.keys(vc.claimData[attestordid][0])[0]
+  let attestPredicate = Object.keys(vc.claimData[attestordid][0][attestlink])[0]
+  let claimantDid = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate])[0]
+  let claimlink = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0])[0]
+  let claimData = vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0][claimlink]
+
+  let ctx = canvas.getContext('2d')
+  ctx.font = template.claimDataFont
+  let line = 0
+  for (var i in claimData) {
+    line++
+    let key = Object.keys(claimData[i])[0]
+    if (line > 59) {
+      ctx.fillText(' ... ', template.claimDataOffsetX, template.claimDataOffsetY + (line * template.claimDataLineSpacing))
+      break
+    } else {
+      ctx.fillText(key + ': ' + claimData[i][key], template.claimDataOffsetX, template.claimDataOffsetY + (line * template.claimDataLineSpacing))
+    }
+  }
+}
+
+/**
+ * draws the QR code on a canvas
+ */
+const qrToCanvas = async (vc, template, canvas) => {
+  let attestordid = Object.keys(vc.claimData)[0]
+  let attestlink = Object.keys(vc.claimData[attestordid][0])[0]
+  let attestPredicate = Object.keys(vc.claimData[attestordid][0][attestlink])[0]
+  let claimantDid = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate])[0]
+  let claimlink = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0])[0]
+  let claimData = vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0][claimlink]
+
+  let ctx = canvas.getContext('2d')
+  let qrImage = await loadImage(vc.qr)
+  ctx.drawImage(qrImage, template.qrOffsetX, template.qrOffsetY, template.qrWidth, template.qrHeight)
+}
+/**
  * draws the document on a canvas
  */
 const toCanvas = async (vc, template, canvas) => {
@@ -89,7 +130,7 @@ const fromCanvas = (canvas) => {
   var ctx = canvas.getContext('2d')
   var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   var decoded = jsQR(imageData.data, imageData.width, imageData.height)
-  if (decoded) {
+  if (decoded) {let claimData = vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0][claimlink]
     decoded.data = pako.inflate(decoded.data, { 'to': 'string' })
     return decoded
   }
@@ -117,6 +158,8 @@ const validate = async (did, decodedQR) => {
 export {
   template,
   issue,
+  claimDataToCanvas,
+  qrToCanvas,
   toCanvas,
   fromCanvas,
   validate,
