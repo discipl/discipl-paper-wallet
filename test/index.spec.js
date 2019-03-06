@@ -103,6 +103,8 @@ describe('descipl-paper-wallet', function () {
       expect(result).to.equal(true)
       result = await pw.validate(ssid.did, readData.data)
       expect(result).to.equal(null)
+      result = await pw.validate(ssid.did, readData.data.replace('1234AB', '4321BA'))
+      expect(result).to.equal(null)
     })
   })
 })
