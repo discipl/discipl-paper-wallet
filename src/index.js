@@ -1,7 +1,6 @@
 
 import QRCode from 'qrcode'
 import jsQR from 'jsqr'
-import pako from 'pako'
 import * as core from '@discipl/core'
 import stringify from 'json-stable-stringify'
 import { loadImage } from 'canvas'
@@ -46,7 +45,7 @@ const issue = async (attestLink) => {
   if (claim) {
     let predicate = Object.keys(claim.data)[0]
     let claimData = await core.exportLD(claim.data[predicate])
-    let data = pako.deflate(stringify(claimData), { to: 'string' })
+    let data = stringify(claimData)
     let qr = await QRCode.toDataURL(data)
     return { claimData: claimData, qr: qr }
   }
@@ -93,7 +92,6 @@ const fromCanvas = (canvas) => {
   var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   var decoded = jsQR(imageData.data, imageData.width, imageData.height)
   if (decoded) {
-    decoded.data = pako.inflate(decoded.data, { 'to': 'string' })
     return decoded
   }
   return null

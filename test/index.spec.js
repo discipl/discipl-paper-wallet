@@ -95,7 +95,7 @@ describe('descipl-paper-wallet', function () {
       let canvasReader = createCanvas(800, 800)
       let ctx = canvasReader.getContext('2d')
       let scan = await loadImage(vc.qr)
-      ctx.drawImage(scan, 50, 50, 692, 692)
+      ctx.drawImage(scan, 10, 10)
       let readData = await pw.fromCanvas(canvasReader)
       expect(stringify(JSON.parse(readData.data))).to.deep.equal(stringify(claimT))
       let result = await pw.validate(attestor.did, readData.data)
