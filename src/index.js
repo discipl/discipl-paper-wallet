@@ -17,6 +17,7 @@ let template = {
   canvasHeight: 838, // 11.64 inch @ 72 dpi
   productHeaderFont: 'bold 18px helvetica',
   claimDataFont: '8px helvetica',
+  productHeaderText: 'Attested data:',
   productHeaderOffsetX: 125,
   productHeaderOffsetY: 75,
   claimDataOffsetX: 25,
@@ -40,10 +41,15 @@ const getCore = () => {
  * which can be used with other methods to save it as an image or PDF
  */
 const issue = async (attestLink) => {
-  let claimData = await core.exportLD(attestLink)
-  let data = stringify(claimData)
-  let qr = await QRCode.toDataURL(data)
-  return { claimData: claimData, qr: qr }
+  let claim = await core.get(attestLink)
+  if (claim) {
+    let predicate = Object.keys(claim.data)[0]
+    let claimData = await core.exportLD(claim.data[predicate])
+    let data = stringify(claimData)
+    let qr = await QRCode.toDataURL(data)
+    return { claimData: claimData, qr: qr }
+  }
+  return null
 }
 
 /**
@@ -51,18 +57,15 @@ const issue = async (attestLink) => {
  */
 const toCanvas = async (vc, template, canvas) => {
   let attestordid = Object.keys(vc.claimData)[0]
-  let attestlink = Object.keys(vc.claimData[attestordid][0])[0]
-  let attestPredicate = Object.keys(vc.claimData[attestordid][0][attestlink])[0]
-  let claimantDid = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate])[0]
-  let claimlink = Object.keys(vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0])[0]
-  let claimData = vc.claimData[attestordid][0][attestlink][attestPredicate][claimantDid][0][claimlink]
+  let claimlink = Object.keys(vc.claimData[attestordid][0])[0]
+  let claimData = vc.claimData[attestordid][0][claimlink]
 
   let ctx = canvas.getContext('2d')
   ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
   ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
 
   ctx.font = template.productHeaderFont
-  ctx.fillText(attestPredicate + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
+  ctx.fillText(template.productHeaderText + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
 
   ctx.font = template.claimDataFont
   let line = 0
@@ -106,7 +109,6 @@ const validate = async (did, decodedQR) => {
       result = await core.importLD(claimData)
     }
   } catch (err) {
-    console.log(err)
     return null
   }
   return result

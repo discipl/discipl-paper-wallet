@@ -55,12 +55,11 @@ describe('descipl-paper-wallet', function () {
           { 'Plaats9': 'Zeist' },
           { 'tot2': '01-01-2011' }]
 
-      let ssid = await discipl.newSsid('ephemeral')
       let attestor = await discipl.newSsid('ephemeral')
-      let claimLink = await discipl.claim(ssid, data)
+      let claimLink = await discipl.claim(attestor, data)
       let link = await discipl.attest(attestor, 'Bewijs inschrijving Haarlem', claimLink)
 
-      let claimT = await discipl.exportLD(link)
+      let claimT = await discipl.exportLD(claimLink)
 
       let vc = await pw.issue(link)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
@@ -69,7 +68,7 @@ describe('descipl-paper-wallet', function () {
       const buff = canvas.toBuffer('application/pdf', {
         title: 'Bewijs inschrijving',
         author: attestor.did,
-        subject: ssid.did,
+        subject: '',
         keywords: '',
         creator: 'discipl-paper-wallet',
         creationDate: new Date()
@@ -96,14 +95,14 @@ describe('descipl-paper-wallet', function () {
       let canvasReader = createCanvas(800, 800)
       let ctx = canvasReader.getContext('2d')
       let scan = await loadImage(vc.qr)
-      ctx.drawImage(scan, 50, 50, 596, 596)
+      ctx.drawImage(scan, 10, 10)
       let readData = await pw.fromCanvas(canvasReader)
       expect(stringify(JSON.parse(readData.data))).to.deep.equal(stringify(claimT))
       let result = await pw.validate(attestor.did, readData.data)
       expect(result).to.equal(true)
-      result = await pw.validate(ssid.did, readData.data)
+      result = await pw.validate(attestor.did + '-', readData.data)
       expect(result).to.equal(null)
-      result = await pw.validate(ssid.did, readData.data.replace('1234AB', '4321BA'))
+      result = await pw.validate(attestor.did, readData.data.replace('1234AB', '4321BA'))
       expect(result).to.equal(null)
     })
   })
