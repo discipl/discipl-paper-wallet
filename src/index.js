@@ -96,12 +96,12 @@ const fromCanvas = (canvas) => {
  * validates decoded QR data through a claim import,
  * verifying the imported claim is attested by the given did
  */
-const validate = async (did, decodedQR) => {
+const validate = async (did, decodedQR, validatorDid = null) => {
   let result = null
   try {
     let claimData = JSON.parse(decodedQR)
     if (claimData[did]) {
-      result = await core.importLD(claimData)
+      result = await core.importLD(claimData, validatorDid)
     }
   } catch (err) {
     return null
