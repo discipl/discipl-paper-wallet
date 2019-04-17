@@ -58,9 +58,9 @@ describe('descipl-paper-wallet', function () {
       let attestor = await discipl.newSsid('ephemeral')
       let claimLink = await discipl.claim(attestor, data)
 
-      let claimT = await discipl.exportLD(claimLink)
+      let claimT = await discipl.exportLD(claimLink, attestor)
 
-      let vc = await pw.issue(claimLink)
+      let vc = await pw.issue(claimLink, attestor)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
       await pw.toCanvas(vc, pw.template, canvas)
 
