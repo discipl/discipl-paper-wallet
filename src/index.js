@@ -93,6 +93,7 @@ const toCanvas = async (vc, template, canvas) => {
     }
   }
   let qrImage = await loadImage(vc.qr)
+  // Heuristic algorithm to estimate compact QRcode size
   let QRSize = Math.max((42 + (8 * vc.version)) * 595 / (21 * 25), template.qrSizeMin)
   ctx.drawImage(qrImage, template.qrOffsetXright - QRSize, template.qrOffsetYbottom - QRSize, QRSize, QRSize)
   // draw footer

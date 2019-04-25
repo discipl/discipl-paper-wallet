@@ -10,7 +10,7 @@ let discipl = pw.getCore()
 const fs = require('fs')
 
 describe('descipl-paper-wallet', function () {
-  this.timeout(10000)
+  this.timeout(5000)
   describe('with the discipl paper wallet component', function () {
     it('should be able to issue an attested claim to a document on Canvas, and scan the QR in the document on the canvas and validate it using a given attestor did', async function () {
       let data =
