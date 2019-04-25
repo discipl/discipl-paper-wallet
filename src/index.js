@@ -4,6 +4,7 @@ import jsQR from 'jsqr'
 import * as core from '@discipl/core'
 import stringify from 'json-stable-stringify'
 import { loadImage } from 'canvas'
+import { CanvasTextWrapper } from 'canvas-text-wrapper'
 
 /**
  * a default template
@@ -11,6 +12,7 @@ import { loadImage } from 'canvas'
 let template = {
   backgroundImage: 'images/template.png',
   logoImage: 'images/logo.png',
+  disciplImage: 'discipl.svg',
   logoWidth: 150,
   logoHeight: 150,
   canvasWidth: 595, // 8.27 inch @ 72 dpi
@@ -23,10 +25,15 @@ let template = {
   claimDataOffsetX: 25,
   claimDataOffsetY: 200,
   claimDataLineSpacing: 10,
-  qrOffsetX: 225,
-  qrOffsetY: 200,
-  qrWidth: 350,
-  qrHeight: 350
+  qrOffsetXright: 550,
+  qrOffsetYbottom: 700,
+  qrSizeMin: 150,
+  footerFont: '10px helvetica',
+  footerText: 'Dit is een automatisch gegenereerd document en daarom niet ondertekend. De gegevens zijn verkregen via NLX en geborgd in de QR-code. U kunt de echtheid van dit document controleren via een bijbehorende app of online',
+  footerWidth: 400,
+  footerHeight: 200,
+  footerOffsetX: 90,
+  footerOffsetY: 730
 }
 
 /**
@@ -44,7 +51,8 @@ const issue = async (claimLink, ssid) => {
   let claimData = await core.exportLD(claimLink, ssid)
   let data = stringify(claimData)
   let qr = await QRCode.toDataURL(data)
-  return { claimData: claimData, qr: qr }
+  let ver = (await QRCode.create(data)).version
+  return { claimData: claimData, qr: qr, version: ver }
 }
 
 /**
@@ -58,9 +66,19 @@ const toCanvas = async (vc, template, canvas) => {
   let ctx = canvas.getContext('2d')
   ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
   ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
-
+  ctx.drawImage(await loadImage(template.disciplImage), template.disciplOffsetX, template.disciplOffsetY, template.disciplWidth, template.disciplHeight)
   ctx.font = template.productHeaderFont
   ctx.fillText(template.productHeaderText + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
+
+  // draw subheader
+  ctx.font = template.subheaderFont
+  ctx.fillText(template.subheaderText, template.subheaderOffsetX, template.subheaderOffsetY)
+
+  // draw a line
+  ctx.beginPath()
+  ctx.moveTo(40, 250)
+  ctx.lineTo(570, 250)
+  ctx.stroke()
 
   ctx.font = template.claimDataFont
   let line = 0
@@ -74,9 +92,17 @@ const toCanvas = async (vc, template, canvas) => {
       ctx.fillText(key + ': ' + claimData[i][key], template.claimDataOffsetX, template.claimDataOffsetY + (line * template.claimDataLineSpacing))
     }
   }
-
   let qrImage = await loadImage(vc.qr)
-  ctx.drawImage(qrImage, template.qrOffsetX, template.qrOffsetY, template.qrWidth, template.qrHeight)
+  // Heuristic algorithm to estimate compact QRcode size
+  let QRSize = Math.max((42 + (8 * vc.version)) * 595 / (21 * 25), template.qrSizeMin)
+  ctx.drawImage(qrImage, template.qrOffsetXright - QRSize, template.qrOffsetYbottom - QRSize, QRSize, QRSize)
+  // draw footer
+  CanvasTextWrapper(canvas, template.footerText, {
+    font: template.footerFont,
+    paddingX: template.footerOffsetX,
+    paddingY: template.footerOffsetY,
+    textAlign: 'center'
+  })
 }
 
 /**

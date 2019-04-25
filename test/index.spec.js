@@ -61,6 +61,7 @@ describe('descipl-paper-wallet', function () {
       let claimT = await discipl.exportLD(claimLink, attestor)
 
       let vc = await pw.issue(claimLink, attestor)
+      expect(vc.version).to.equal(28)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
       await pw.toCanvas(vc, pw.template, canvas)
 
@@ -72,7 +73,6 @@ describe('descipl-paper-wallet', function () {
         creator: 'discipl-paper-wallet',
         creationDate: new Date()
       })
-
       fs.writeFile('/tmp/vc.pdf', buff, function (err) {
         if (err) throw err
         console.log('created /tmp/vc.pdf')
