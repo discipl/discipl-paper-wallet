@@ -4,6 +4,7 @@ import jsQR from 'jsqr'
 import * as core from '@discipl/core'
 import stringify from 'json-stable-stringify'
 import { loadImage } from 'canvas'
+var CanvasTextWrapper = require('canvas-text-wrapper').CanvasTextWrapper;
 
 /**
  * a default template
@@ -58,9 +59,20 @@ const toCanvas = async (vc, template, canvas) => {
   let ctx = canvas.getContext('2d')
   ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
   ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
+  ctx.drawImage(await loadImage(template.disciplImage), template.disciplOffsetX, template.disciplOffsetY, template.disciplWidth, template.disciplHeight)
 
   ctx.font = template.productHeaderFont
   ctx.fillText(template.productHeaderText + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
+
+  // draw subheader
+  ctx.font = template.subheaderFont
+  ctx.fillText(template.subheaderText, template.subheaderOffsetX, template.subheaderOffsetY)
+
+  // draw a line
+  ctx.beginPath();
+  ctx.moveTo(40, 250);
+  ctx.lineTo(570, 250);
+  ctx.stroke();
 
   ctx.font = template.claimDataFont
   let line = 0
@@ -77,6 +89,14 @@ const toCanvas = async (vc, template, canvas) => {
 
   let qrImage = await loadImage(vc.qr)
   ctx.drawImage(qrImage, template.qrOffsetX, template.qrOffsetY, template.qrWidth, template.qrHeight)
+
+  // draw footer
+  CanvasTextWrapper(canvas, template.footerText, {
+        font: template.footerFont,
+        paddingX: template.footerOffsetX,
+        paddingY: template.footerOffsetY,
+        textAlign: "center"
+      });
 }
 
 /**

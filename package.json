@@ -50,6 +50,7 @@
   "dependencies": {
     "@discipl/core": "^0.11.1",
     "canvas": "^2.4.1",
+    "canvas-text-wrapper": "^0.10.2",
     "json-stable-stringify": "^1.0.1",
     "jsqr": "^1.2.0",
     "pako": "^1.0.10",
