@@ -61,7 +61,7 @@ describe('descipl-paper-wallet', function () {
       let claimT = await discipl.exportLD(claimLink, attestor)
 
       let vc = await pw.issue(claimLink, attestor)
-      expect (vc.version).to.equal(28)
+      expect(vc.version).to.equal(28)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
       await pw.toCanvas(vc, pw.template, canvas)
 

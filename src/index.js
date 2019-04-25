@@ -28,8 +28,8 @@ let template = {
   qrOffsetXright: 550,
   qrOffsetYbottom: 700,
   qrSizeMin: 150,
-  footerFont: "10px helvetica",
-  footerText: "Dit is een automatisch gegenereerd document en daarom niet ondertekend. De gegevens zijn verkregen via NLX en geborgd in de QR-code. U kunt de echtheid van dit document controleren via een bijbehorende app of online",
+  footerFont: '10px helvetica',
+  footerText: 'Dit is een automatisch gegenereerd document en daarom niet ondertekend. De gegevens zijn verkregen via NLX en geborgd in de QR-code. U kunt de echtheid van dit document controleren via een bijbehorende app of online',
   footerWidth: 400,
   footerHeight: 200,
   footerOffsetX: 90,
@@ -75,10 +75,10 @@ const toCanvas = async (vc, template, canvas) => {
   ctx.fillText(template.subheaderText, template.subheaderOffsetX, template.subheaderOffsetY)
 
   // draw a line
-  ctx.beginPath();
-  ctx.moveTo(40, 250);
-  ctx.lineTo(570, 250);
-  ctx.stroke();
+  ctx.beginPath()
+  ctx.moveTo(40, 250)
+  ctx.lineTo(570, 250)
+  ctx.stroke()
 
   ctx.font = template.claimDataFont
   let line = 0
@@ -93,15 +93,15 @@ const toCanvas = async (vc, template, canvas) => {
     }
   }
   let qrImage = await loadImage(vc.qr)
-  let QRSize = Math.max((42+(8*vc.version))*595/(21*25), template.qrSizeMin)
-  ctx.drawImage(qrImage, template.qrOffsetXright-QRSize, template.qrOffsetYbottom-QRSize, QRSize, QRSize)
+  let QRSize = Math.max((42 + (8 * vc.version)) * 595 / (21 * 25), template.qrSizeMin)
+  ctx.drawImage(qrImage, template.qrOffsetXright - QRSize, template.qrOffsetYbottom - QRSize, QRSize, QRSize)
   // draw footer
   CanvasTextWrapper(canvas, template.footerText, {
-        font: template.footerFont,
-        paddingX: template.footerOffsetX,
-        paddingY: template.footerOffsetY,
-        textAlign: "center"
-      });
+    font: template.footerFont,
+    paddingX: template.footerOffsetX,
+    paddingY: template.footerOffsetY,
+    textAlign: 'center'
+  })
 }
 
 /**
