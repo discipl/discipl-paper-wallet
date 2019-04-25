@@ -10,7 +10,7 @@ let discipl = pw.getCore()
 const fs = require('fs')
 
 describe('descipl-paper-wallet', function () {
-  this.timeout(5000)
+  this.timeout(10000)
   describe('with the discipl paper wallet component', function () {
     it('should be able to issue an attested claim to a document on Canvas, and scan the QR in the document on the canvas and validate it using a given attestor did', async function () {
       let data =
@@ -61,6 +61,7 @@ describe('descipl-paper-wallet', function () {
       let claimT = await discipl.exportLD(claimLink, attestor)
 
       let vc = await pw.issue(claimLink, attestor)
+      expect (vc.version).to.equal(28)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
       await pw.toCanvas(vc, pw.template, canvas)
 
@@ -72,7 +73,6 @@ describe('descipl-paper-wallet', function () {
         creator: 'discipl-paper-wallet',
         creationDate: new Date()
       })
-
       fs.writeFile('/tmp/vc.pdf', buff, function (err) {
         if (err) throw err
         console.log('created /tmp/vc.pdf')
