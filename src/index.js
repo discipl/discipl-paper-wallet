@@ -101,7 +101,8 @@ const toCanvas = async (vc, template, canvas) => {
     font: template.footerFont,
     paddingX: template.footerOffsetX,
     paddingY: template.footerOffsetY,
-    textAlign: 'center'
+    textAlign: 'center',
+    renderHDPI: false
   })
 }
 
