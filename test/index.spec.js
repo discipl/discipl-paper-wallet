@@ -1,16 +1,21 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import * as pw from '../src/index.js'
-
 import { expect } from 'chai'
+import { PaperWallet, template } from '../src'
 const { createCanvas, loadImage } = require('canvas')
-let discipl = pw.getCore()
 const fs = require('fs')
+
+let pw
+let discipl
 
 describe('descipl-paper-wallet', function () {
   this.timeout(5000)
   describe('with the discipl paper wallet component', function () {
+    before(() => {
+      pw = new PaperWallet()
+      discipl = pw.getCore()
+    })
     it('should be able to issue an attested claim to a document on Canvas, and scan the QR in the document on the canvas and validate it using a given attestor did', async function () {
       let data =
         [{ 'Naam': 'van Sesamstraat' },
@@ -61,8 +66,8 @@ describe('descipl-paper-wallet', function () {
 
       let vc = await pw.issue(claimLink, attestor, { 'public': 'metadata' })
       expect(vc.version).to.equal(29)
-      let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
-      await pw.toCanvas(vc, pw.template, canvas)
+      let canvas = createCanvas(template.canvasWidth, template.canvasHeight, 'pdf')
+      await pw.toCanvas(vc, template, canvas)
 
       const buff = canvas.toBuffer('application/pdf', {
         title: 'Bewijs inschrijving',

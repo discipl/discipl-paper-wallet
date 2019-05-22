@@ -1,6 +1,6 @@
 {
   "name": "@discipl/paper-wallet",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "library for creating paper wallets consisting of a QR holding an attested claim as a verifiable credential",
   "main": "dist/index.js",
   "module": "src/index.js",
@@ -48,7 +48,7 @@
     "standard": "12.0.1"
   },
   "dependencies": {
-    "@discipl/core": "0.11.2",
+    "@discipl/core": "file:../../../packages/discipl-core-0.12.0.tgz",
     "canvas": "2.5.0",
     "canvas-text-wrapper": "0.10.2",
     "json-stable-stringify": "1.0.1",
