@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-expressions */
 
 import * as pw from '../src/index.js'
-import stringify from 'json-stable-stringify'
 
 import { expect } from 'chai'
 const { createCanvas, loadImage } = require('canvas')
@@ -60,8 +59,8 @@ describe('descipl-paper-wallet', function () {
 
       let claimT = await discipl.exportLD(claimLink, attestor)
 
-      let vc = await pw.issue(claimLink, attestor)
-      expect(vc.version).to.equal(28)
+      let vc = await pw.issue(claimLink, attestor, { 'public': 'metadata' })
+      expect(vc.version).to.equal(29)
       let canvas = createCanvas(pw.template.canvasWidth, pw.template.canvasHeight, 'pdf')
       await pw.toCanvas(vc, pw.template, canvas)
 
@@ -98,7 +97,8 @@ describe('descipl-paper-wallet', function () {
       let scan = await loadImage(vc.qr)
       ctx.drawImage(scan, 10, 10)
       let readData = await pw.fromCanvas(canvasReader)
-      expect(stringify(JSON.parse(readData.data))).to.deep.equal(stringify(claimT))
+      expect(JSON.parse(readData.data).claimData).to.deep.equal(claimT)
+      expect(JSON.parse(readData.data).metadata).to.deep.equal({ 'public': 'metadata' })
       let result = await pw.validate(attestor.did, readData.data, validatorSsid.did)
       expect(result).to.equal(true)
 
