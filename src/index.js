@@ -47,9 +47,9 @@ const getCore = () => {
  * issues a attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
  * which can be used with other methods to save it as an image or PDF
  */
-const issue = async (claimLink, ssid) => {
+const issue = async (claimLink, ssid, metadata = {}) => {
   let claimData = await core.exportLD(claimLink, ssid)
-  let data = stringify(claimData)
+  let data = stringify({ 'claimData': claimData, 'metadata': metadata })
   let qr = await QRCode.toDataURL(data)
   let ver = (await QRCode.create(data)).version
   return { claimData: claimData, qr: qr, version: ver }
@@ -126,7 +126,7 @@ const fromCanvas = (canvas) => {
 const validate = async (did, decodedQR, validatorDid = null) => {
   let result = null
   try {
-    let claimData = JSON.parse(decodedQR)
+    let claimData = JSON.parse(decodedQR).claimData
     if (claimData[did]) {
       result = await core.importLD(claimData, validatorDid)
     }
