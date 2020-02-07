@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/discipl/discipl-paper-wallet#readme",
   "devDependencies": {
-    "@babel/cli": "7.4.4",
+    "@babel/cli": "7.5.0",
     "@babel/core": "7.4.5",
     "@babel/preset-env": "7.4.5",
     "@babel/register": "7.4.4",
@@ -43,13 +43,13 @@
     "chai": "4.2.0",
     "codecov": "3.5.0",
     "mocha": "5.2.0",
-    "nyc": "14.1.1",
+    "nyc": "15.0.0",
     "sinon": "7.3.2",
     "standard": "12.0.1"
   },
   "dependencies": {
     "@discipl/core": "0.12.0",
-    "canvas": "2.5.0",
+    "canvas": "2.6.1",
     "canvas-text-wrapper": "0.10.2",
     "json-stable-stringify": "1.0.1",
     "jsqr": "1.2.0",
