@@ -4,6 +4,10 @@ node_js:
 addons:
   sonarcloud:
     organization: "discipl" # the key of the org you chose at step #3
+
+before_install:
+  - sudo apt-get -y install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
 script:
   - npm run lint
   - npm test
