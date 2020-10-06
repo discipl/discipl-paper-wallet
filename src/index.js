@@ -5,6 +5,7 @@ import stringify from 'json-stable-stringify'
 import { loadImage } from 'canvas'
 import { CanvasTextWrapper } from 'canvas-text-wrapper'
 import { DisciplCore } from '@discipl/core'
+import fs from 'fs'
 
 /**
  * a default template
@@ -98,6 +99,8 @@ class PaperWallet {
       }
     }
     let qrImage = await loadImage(vc.qr)
+    // Write qr to an HTML file as the src attribute of an image that will properly be rendered in an browser
+    fs.writeFileSync('./vcqr.html', `<img src="${vc.qr}">`);
     // Heuristic algorithm to estimate compact QRcode size
     let QRSize = Math.max((42 + (8 * vc.version)) * 595 / (21 * 25), template.qrSizeMin)
     ctx.drawImage(qrImage, template.qrOffsetXright - QRSize, template.qrOffsetYbottom - QRSize, QRSize, QRSize)
