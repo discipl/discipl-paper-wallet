@@ -60,4 +60,7 @@ typings/
 # coverage
 coverage.lcov
 
+# visual studio files
+.vs
+
 dist
