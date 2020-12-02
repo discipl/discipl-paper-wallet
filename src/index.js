@@ -54,7 +54,7 @@ class PaperWallet {
    */
   async issue (claimLink, ssid, metadata = {}) {
     let claimData = await this.core.exportLD(claimLink, ssid)
-    let data = stringify({ 'claimData': claimData, 'metadata': metadata });
+    let data = stringify({ 'claimData': claimData, 'metadata': metadata })
     let qr = await QRCode.toDataURL(data)
     let ver = (await QRCode.create(data)).version
     return { claimData: claimData, qr: qr, version: ver }
@@ -63,16 +63,17 @@ class PaperWallet {
   /**
    * creates the wallet
    * @param {any} vc
+   * @param {any} resultLink
    */
-  async createWalletVc(vc, resultLink) {
-    console.log("Inside function", this);
-    const data = await this.core.get(resultLink);
-    let qr = await QRCode.toDataURL(stringify(data));
-    let ver = (await QRCode.create(stringify(data))).version;
+  async createWalletVc (vc, resultLink) {
+    console.log('Inside function', this)
+    const data = await this.core.get(resultLink)
+    let qr = await QRCode.toDataURL(stringify(data))
+    let ver = (await QRCode.create(stringify(data))).version
     return {
-        claimData: vc.claimData,
-        qr: qr,
-        version: ver
+      claimData: vc.claimData,
+      qr: qr,
+      version: ver
     }
   }
 
