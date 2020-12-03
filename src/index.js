@@ -71,7 +71,6 @@ class PaperWallet {
    * @param {string} walletLink
    */
   async walletIssue (claimData, walletLink) {
-    console.log('inside walletIssue')
     const data = await this.core.get(walletLink)
     let qr = await QRCode.toDataURL(stringify(data))
     let ver = (await QRCode.create(stringify(data))).version
@@ -85,12 +84,10 @@ class PaperWallet {
   /**
    * draws the document on a canvas
    */
-  async toCanvas(vc, template, canvas) {
-    console.log('vc in toCanvas: ', vc)
+  async toCanvas (vc, template, canvas) {
     let attestordid = Object.keys(vc.claimData)[0]
     let claimlink = Object.keys(vc.claimData[attestordid][0])[0]
     let claimData = vc.claimData[attestordid][0][claimlink]
-    console.log('claimData: ', claimData);
 
     let ctx = canvas.getContext('2d')
     ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
