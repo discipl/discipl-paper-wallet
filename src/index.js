@@ -49,7 +49,7 @@ class PaperWallet {
   }
 
   /**
-   * issues a attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
+   * issues an attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
    * which can be used with other methods to save it as an image or PDF
    */
   async issue (claimLink, ssid, metadata = {}) {
@@ -57,21 +57,26 @@ class PaperWallet {
     let data = stringify({ 'claimData': claimData, 'metadata': metadata })
     let qr = await QRCode.toDataURL(data)
     let ver = (await QRCode.create(data)).version
-    return { claimData: claimData, qr: qr, version: ver }
+    return {
+      claimData: claimData,
+      qr: qr,
+      version: ver
+    }
   }
 
   /**
-   * creates the wallet
-   * @param {any} vc
-   * @param {any} resultLink
+   * issues an attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
+   * this QR code can be exported to a wallet 
+   * @param {any} claimData The data shown on the canvas
+   * @param {string} walletLink
    */
-  async createWalletVc (vc, resultLink) {
-    console.log('Inside function', this)
-    const data = await this.core.get(resultLink)
+  async walletIssue (claimData, walletLink) {
+    console.log('inside walletIssue')
+    const data = await this.core.get(walletLink)
     let qr = await QRCode.toDataURL(stringify(data))
     let ver = (await QRCode.create(stringify(data))).version
     return {
-      claimData: vc.claimData,
+      claimData: claimData,
       qr: qr,
       version: ver
     }
@@ -80,10 +85,12 @@ class PaperWallet {
   /**
    * draws the document on a canvas
    */
-  async toCanvas (vc, template, canvas) {
+  async toCanvas(vc, template, canvas) {
+    console.log('vc in toCanvas: ', vc)
     let attestordid = Object.keys(vc.claimData)[0]
     let claimlink = Object.keys(vc.claimData[attestordid][0])[0]
     let claimData = vc.claimData[attestordid][0][claimlink]
+    console.log('claimData: ', claimData);
 
     let ctx = canvas.getContext('2d')
     ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
