@@ -66,7 +66,7 @@ class PaperWallet {
 
   /**
    * issues an attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
-   * this QR code can be exported to a wallet 
+   * this QR code can be exported to a wallet
    * @param {any} claimData The data shown on the canvas
    * @param {string} walletLink
    */
