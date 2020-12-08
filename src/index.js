@@ -49,7 +49,7 @@ class PaperWallet {
   }
 
   /**
-   * issues a attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
+   * issues an attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
    * which can be used with other methods to save it as an image or PDF
    */
   async issue (claimLink, ssid, metadata = {}) {
@@ -57,7 +57,28 @@ class PaperWallet {
     let data = stringify({ 'claimData': claimData, 'metadata': metadata })
     let qr = await QRCode.toDataURL(data)
     let ver = (await QRCode.create(data)).version
-    return { claimData: claimData, qr: qr, version: ver }
+    return {
+      claimData: claimData,
+      qr: qr,
+      version: ver
+    }
+  }
+
+  /**
+   * issues an attested (signed) claim, exporting it to a verifiable data structure holding data and a QR code image
+   * this QR code can be exported to a wallet
+   * @param {any} claimData The data shown on the canvas
+   * @param {string} walletLink
+   */
+  async walletIssue (claimData, walletLink) {
+    const data = await this.core.get(walletLink)
+    let qr = await QRCode.toDataURL(stringify(data))
+    let ver = (await QRCode.create(stringify(data))).version
+    return {
+      claimData: claimData,
+      qr: qr,
+      version: ver
+    }
   }
 
   /**
