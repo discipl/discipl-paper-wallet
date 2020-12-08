@@ -3,13 +3,14 @@
 
 import { expect } from 'chai'
 import { PaperWallet, template } from '../src'
+import sinon from 'sinon'
 const { createCanvas, loadImage } = require('canvas')
 const fs = require('fs')
 
 let pw
 let discipl
 
-describe('descipl-paper-wallet', function () {
+describe('discipl-paper-wallet', function () {
   this.timeout(5000)
   describe('with the discipl paper wallet component', function () {
     before(() => {
@@ -115,6 +116,32 @@ describe('descipl-paper-wallet', function () {
       expect(result).to.equal(null)
       result = await pw.validate(attestor.did, readData.data.replace('1234AB', '4321BA'))
       expect(result).to.equal(null)
+    })
+    it('should be able to issue an attested claim suitable for downloading to wallet', async function () {
+      let data =
+            [{ 'Naam': 'van Sesamstraat' },
+              { 'Voorletters': 'B' },
+              { 'Geboortedatum': '1975-05-13' },
+              { 'Postcode': '1234AB' },
+              { 'Adres': 'Van diepenbrockstraat 36' },
+              { 'Plaats': 'Amsterdam' },
+              { 'Land': 'Nederland' },
+              { 'BSN': '012345678' }]
+
+      let newIdentityStub = sinon.stub().returns('link:discipl:ula-server')
+      let getStub = sinon.stub().returns('link:discipl:ula-server:eyJzZXNzaW9uSWQiOiJzZXMtMTE5YTZjZjMtZDhhMy00MmNjLTkwYWYtNzI0MWU4M2JjZWZmIiwicXJjb2RlIjoiaHR0cHM6Ly8weHZ2bXd4ZDZlLmV4ZWN1dGUtYXBpLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tL2Rldi9jaGFsbGVuZ2VzP3Nlc3Npb25JZD1zZXMtMTE5YTZjZjMtZDhhMy00MmNjLTkwYWYtNzI0MWU4M2JjZWZmIiwidHJhbnNhY3Rpb25JZCI6InRyeC04YWRjNDI2MC1mYTllLTRiNDUtODViOC1kYjcwMGM5NDM0MTEifQ==')
+      let stubConnector = { newIdentity: newIdentityStub, get: getStub }
+
+      await discipl.registerConnector('ula-server', stubConnector)
+
+      let attestor = await discipl.newSsid('ephemeral')
+      let claimLink = await discipl.claim(attestor, data)
+      let vc = await pw.issue(claimLink, attestor, { 'public': 'metadata' })
+
+      let attestorWallet = await discipl.newSsid('ula-server')
+      let vcWallet = await pw.walletIssue(vc.claimData, attestorWallet)
+
+      expect(vcWallet.version).to.equal(14)
     })
   })
 })
