@@ -11,7 +11,7 @@ import { DisciplCore } from '@discipl/core'
  */
 const template = {
   backgroundImage: 'images/template.png',
-  logoImage: 'images/logo.png',
+  logoImage: 'images/logo_Haarlem',
   disciplImage: 'discipl.svg',
   logoWidth: 150,
   logoHeight: 150,
@@ -84,14 +84,34 @@ class PaperWallet {
   /**
    * draws the document on a canvas
    */
-  async toCanvas (vc, template, canvas) {
+  async toCanvas (vc, template, canvas, need) {
     let attestordid = Object.keys(vc.claimData)[0]
     let claimlink = Object.keys(vc.claimData[attestordid][0])[0]
     let claimData = vc.claimData[attestordid][0][claimlink]
 
     let ctx = canvas.getContext('2d')
+
+    switch (need) {
+      case ('BRP_UITTREKSEL_NEED'):
+        template.logoImage = 'from-assets/logo_Haarlem.png'
+        template.logoHeight = 160
+        template.logoOffsetX = 0
+        template.logoOffsetY = 0
+        template.subheaderText = 'Onderstaand persoon is bij de gemeente Haarlem ingeschreven'
+        break
+      case ('BELASTINGDIENST_NEED'):
+        template.logoImage = 'form-assets/logo_bd.png'
+        template.logoHeight = 144
+        template.logoOffsetX = 20
+        template.logoOffsetY = 2
+            template.subheaderText = 'Onderstaande informatie is vastgesteld door de Belastingdienst'
+        break
+      default:
+        console.log('Unsupported image')
+	}
+
     ctx.drawImage(await loadImage(template.backgroundImage), 0, 0, canvas.width, canvas.height)
-    ctx.drawImage(await loadImage(template.logoImage), 0, 0, template.logoWidth, template.logoHeight)
+    ctx.drawImage(await loadImage(template.logoImage), template.logoOffsetX, template.logoOffsetY, template.logoWidth, template.logoHeight)
     ctx.drawImage(await loadImage(template.disciplImage), template.disciplOffsetX, template.disciplOffsetY, template.disciplWidth, template.disciplHeight)
     ctx.font = template.productHeaderFont
     ctx.fillText(template.productHeaderText + ':', template.productHeaderOffsetX, template.productHeaderOffsetY)
