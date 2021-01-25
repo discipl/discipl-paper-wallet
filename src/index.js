@@ -93,18 +93,25 @@ class PaperWallet {
 
     switch (need) {
       case ('BRP_UITTREKSEL_NEED'):
-        template.logoImage = 'from-assets/logo_Haarlem.png'
+      case ('BRP_VERBLIJFPLAATSHISTORIE_NEED'):
+        template.backgroundImage = 'form-assets/another_pdf_template.png'
+        template.logoImage = 'form-assets/logo_Haarlem.png'
         template.logoHeight = 160
+        template.logoWidth = 210
         template.logoOffsetX = 0
-        template.logoOffsetY = 0
+        template.productHeaderText = 'Gewaarmerkt digitaal afschrift van gegevens uit de basisregistratie personen (BRP)'
         template.subheaderText = 'Onderstaand persoon is bij de gemeente Haarlem ingeschreven'
         break
       case ('BELASTINGDIENST_NEED'):
+        template.backgroundImage = 'form-assets/bld_background_pdf_template.png'
         template.logoImage = 'form-assets/logo_bd.png'
-        template.logoHeight = 144
-        template.logoOffsetX = 20
-        template.logoOffsetY = 2
-            template.subheaderText = 'Onderstaande informatie is vastgesteld door de Belastingdienst'
+        template.logoHeight = 77
+        template.logoWidth = 206
+        template.logoOffsetX = 280
+        template.productHeaderText = 'Gewaarmerkt digitaal afschrift van gegevens van de Belastingdienst'
+        template.subheaderText = 'Onderstaande informatie is vastgesteld door de Belastingdienst'
+        break
+      case ('UWV_NEED'):
         break
       default:
         console.log('Unsupported image')
@@ -125,6 +132,9 @@ class PaperWallet {
     ctx.moveTo(40, 250)
     ctx.lineTo(570, 250)
     ctx.stroke()
+
+    // place border around canvas
+    ctx.strokeRect(0, 0, canvas.width, canvas.height)
 
     ctx.font = template.claimDataFont
     let line = 0
